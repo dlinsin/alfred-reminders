@@ -5,11 +5,11 @@ Alfred Extension to create iOS Reminders
 
 ## Setup:
 
-1 download [Reminders.alfredextension](https://github.com/dlinsin/alfred-reminders/blob/master/Reminders.alfredextension)
-1 add to Alfred
-1 download [alfred_reminders.script](https://github.com/dlinsin/alfred-reminders/blob/master/alfred_reminders.scpt)
-1 edit the name of your default Reminders calendar in [alfred_reminders.script](https://github.com/dlinsin/alfred-reminders/blob/master/alfred_reminders.scpt) (at the top of the file)
-1 change the path to `alfred_reminders.script` in the extension 
+1. download [Reminders.alfredextension](https://github.com/dlinsin/alfred-reminders/blob/master/Reminders.alfredextension)
+1. add to Alfred
+1. download [alfred_reminders.script](https://github.com/dlinsin/alfred-reminders/blob/master/alfred_reminders.scpt)
+1. edit the name of your default Reminders calendar in [alfred_reminders.script](https://github.com/dlinsin/alfred-reminders/blob/master/alfred_reminders.scpt) (at the top of the file)
+1. change the path to `alfred_reminders.script` in the extension 
 
 ### Sample Setup
 
