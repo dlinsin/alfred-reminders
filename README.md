@@ -3,6 +3,8 @@ alfred-reminders
 
 Alfred Extension to create iOS Reminders
 
+![Sample Screen Shot](https://github.com/downloads/dlinsin/alfred-reminders/reminder_screen_shot.png)
+
 ## Setup:
 
 1. download [Reminders.alfredextension](https://github.com/dlinsin/alfred-reminders/blob/master/Reminders.alfredextension)
