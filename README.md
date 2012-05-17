@@ -30,15 +30,15 @@ Assume today is _May, 17th 5pm_ and the default calendar is called _Private_
   * titel: get milk
   * due date: May, 21st 3am
   * calendar: Work
-* rem get milk -Wednesday -4am"
+* rem get milk -Wednesday -4am
   * titel: get milk
   * due date: May, 23rd 4am
   * calendar: Private
-* rem get milk -tom -8:15am"
+* rem get milk -tom -8:15am
   * titel: get milk
   * due date: May, 18th 8:15am
   * calendar: Private
-* rem get milk -tom -3:15pm"
+* rem get milk -tom -3:15pm
   * titel: get milk
   * due date: May, 18th 3:15pm
   * calendar: Private
