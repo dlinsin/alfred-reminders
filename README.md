@@ -1,7 +1,7 @@
 alfred-reminders
 ================
 
-Alfred Extension to create iOS Reminders
+An extension for [Alfred](http://www.alfredapp.com/) to create iOS Reminders. You'll need Alfred's [Powerpack](http://www.alfredapp.com/powerpack/) to use this.
 
 ![Sample Screen Shot](https://github.com/downloads/dlinsin/alfred-reminders/reminder_screen_shot.png)
 
