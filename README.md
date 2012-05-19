@@ -7,7 +7,7 @@ Alfred Extension to create iOS Reminders
 
 ## Setup:
 
-1. download [Reminders.alfredextension](https://github.com/dlinsin/alfred-reminders/blob/master/Reminders.alfredextension)
+1. download [Reminders.alfredextension](https://github.com/downloads/dlinsin/alfred-reminders/Reminders.alfredextension)
 1. drag it to Alfred
 1. edit the name of your default Reminders calendar in at the top of the AppleScript
 1. done
