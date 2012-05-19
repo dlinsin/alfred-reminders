@@ -54,4 +54,9 @@ Assume today is _May, 17th 5pm_ and the default calendar is called _Private_
   
 ## TODOs
 
-See [issues](https://github.com/dlinsin/alfred-reminders/issues)
+Report through [issues](https://github.com/dlinsin/alfred-reminders/issues)
+
+## Extension Updater
+
+The extension supports David Ferguson's awesome [Extension Updater](http://jdfwarrior.tumblr.com/updater), 
+so no need to check on updates here manually. 
