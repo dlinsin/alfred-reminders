@@ -8,19 +8,20 @@ Alfred Extension to create iOS Reminders
 ## Setup:
 
 1. download [Reminders.alfredextension](https://github.com/dlinsin/alfred-reminders/blob/master/Reminders.alfredextension)
-1. add to Alfred
-1. download [alfred_reminders.script](https://github.com/dlinsin/alfred-reminders/blob/master/alfred_reminders.scpt)
-1. edit the name of your default Reminders calendar in [alfred_reminders.script](https://github.com/dlinsin/alfred-reminders/blob/master/alfred_reminders.scpt) (at the top of the file)
-1. change the path to `alfred_reminders.script` in the extension 
+1. drag it to Alfred
+1. edit the name of your default Reminders calendar in at the top of the AppleScript
+1. done
 
-### Sample Setup
+### Default Reminders Calendar
 
-Assume you have downloaded `alfred_reminders.script` to `/Users/dlinsin/Downloads` then 
-you need to change the path in the extension dialog as follows:
+If you don't know the name of your Reminders calendar:
 
-```
-osascript /Users/dlinsin/Downloads/alfred_reminders.scpt '{query}'
-```
+![Default Reminders Calendar in iCal](https://github.com/downloads/dlinsin/alfred-reminders/setup_default_calendar.png)
+
+1. go to iCal
+1. make sure the Reminders panel is visible
+1. click on Reminders to reveal your iCould calendars, which are also used for Remindes
+1. edit the name of your default Reminders calendar in Alfred
 
 ## Usage
 
@@ -42,7 +43,7 @@ Assume today is _May, 17th 5pm_ and the default calendar is called _Private_
   * titel: get milk
   * due date: May, 18th 3:15pm
   * calendar: Private
-* rem get milk -6pm"
+* rem get milk -6pm
   * titel: get milk
   * due date: May, 17th 6pm
   * calendar: Private
