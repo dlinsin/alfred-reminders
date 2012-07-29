@@ -1,207 +1,127 @@
--- ***
--- CONFIGURE YOUR DEFAULT REMINDERS CALENDAR HERE
--- ***
-property default_calendar : "Private"
-
-
 on alfred_script(q)
 	
-	-- ***
-	-- parse input
-	-- ***
-	log q
 	set qt to q as text
-	log qt
+	set expandedQT to expandDay(qt)
 	
-	set params_count to count (findAll(qt, "-"))
-	log "parameter count: " & params_count
-	set AppleScript's text item delimiters to " -"
-	set desc to (findDesc(qt, params_count))
-	log "parsed description: " & desc
-	set AppleScript's text item delimiters to " -"
-	set working_date to findDay(qt, params_count)
-	log "parsed date: " & working_date
-	set AppleScript's text item delimiters to " -"
-	set working_date to findTime(qt, params_count, working_date)
-	log "parsed date and time: " & working_date
-	set AppleScript's text item delimiters to " -"
-	set working_calendar to findCal(qt, params_count)
-	log "parsed calendar: " & working_calendar
-	set AppleScript's text item delimiters to ""
-	
-	-- ***
-	-- add to iCal
-	-- based on work by Don Southard - http://www.dirtdon.com
-	-- ***
-	
-	tell application "iCal"
+	tell application "Reminders"
 		activate
-		set newtodo to (make new todo at end of todos in calendar working_calendar with properties {summary:desc, due date:working_date})
-		tell calendar "Private"
-			tell newtodo
-				make new sound alarm at end with properties {trigger date:working_date}
+		tell application "System Events"
+			keystroke "t" using command down
+			keystroke "n" using command down
+			keystroke expandedQT & return
+			key code 53
+		end tell
+		tell application "System Events"
+			set isRunning to (count of (every process whose bundle identifier is "com.Growl.GrowlHelperApp")) > 0
+		end tell
+		
+		if isRunning then
+			tell application id "com.Growl.GrowlHelperApp"
+				set the allNotificationsList to {"New Reminders Task"}
+				set the enabledNotificationsList to {"New Reminders Task"}
+				register as application ¬
+					"New Reminders Task" all notifications allNotificationsList ¬
+					default notifications enabledNotificationsList ¬
+					icon of application "Reminders"
+				notify with name ¬
+					"New Reminders Task" title ¬
+					"New Reminder Created" description ¬
+					expandedQT ¬
+						application name "New Reminders Task"
 			end tell
-		end tell
+		end if
 	end tell
-	tell application "System Events"
-		set isRunning to (count of (every process whose bundle identifier is "com.Growl.GrowlHelperApp")) > 0
-	end tell
-	
-	if isRunning then
-		tell application id "com.Growl.GrowlHelperApp"
-			set the allNotificationsList to ¬
-				{"New Reminders Task"}
-			set the enabledNotificationsList to ¬
-				{"New Reminders Task"}
-			register as application ¬
-				"New Reminders Task" all notifications allNotificationsList ¬
-				default notifications enabledNotificationsList ¬
-				icon of application "iCal"
-			notify with name ¬
-				"New Reminders Task" title ¬
-				"New Task Created" description ¬
-				"Task: " & desc ¬
-				application name "New Reminders Task"
-		end tell
-	end if
 	
 end alfred_script
 
--- *** parser functions ***
-
-on findDesc(str, params_count)
-	if params_count > 0 then
-		trimBoth(text item 1 of str)
-	else
-		trimBoth(str)
-	end if
-end findDesc
-
-on findDay(str, params_count)
+on expandDay(q)
+	set shortDays to {"tom", "mon", "tue", "wed", "thu", "fri", "sat", "sun"}
+	set longDays to {"tomorrow", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"}
 	
-	if params_count > 0 then
-		set dday to trimBoth(text item 2 of lowerString(str))
-	else
-		set dday to "today"
-	end if
+	set expandedQ to q
 	
-	set ddate to current date
-	set current_day to weekday of ddate
-	set days_to_add to 0
-	
-	if dday is "tom" or dday is "tomorrow" then
-		set days_to_add to 1
-	else if dday is "sat" or dday is "saturday" then
-		set days_to_add to (7 - current_day)
-	else if dday is "fri" or dday is "friday" then
-		set days_to_add to (6 - current_day)
-	else if dday is "thu" or dday is "thursday" then
-		set days_to_add to (5 - current_day)
-	else if dday is "wed" or dday is "wednesday" then
-		set days_to_add to (4 - current_day)
-	else if dday is "tue" or dday is "tuesday" then
-		set days_to_add to (3 - current_day)
-	else if dday is "mon" or dday is "monday" then
-		set days_to_add to (2 - current_day)
-	else if dday is "sun" or dday is "sunday" then
-		set days_to_add to (2 - current_day)
-	end if
-	
-	set ddate to ddate + (days_to_add * days)
-	
-	if days_to_add < 0 then
-		set ddate to ddate + (7 * days)
-	end if
-	
-	set time of ddate to 0
-	set hours of ddate to 8
-	
-	ddate
-	
-end findDay
-
-on defaultTimeStr(ddate)
-	set current_day to (day of (current date))
-	set dday to day of ddate
-	set time_str to "8am"
-	if dday = current_day then
-		set current_hour to (hours of (current date)) + 1
-		set am_str to "am"
-		if current_hour > 12 then
-			set am_str to "pm"
-			set current_hour to current_hour - 12
+	repeat with i from 1 to count (longDays)
+		set longDay to item i of longDays
+		set dayStrExists to count (findAll(q, longDay))
+		
+		if dayStrExists > 0 then
+			return expandedQ
 		end if
-		set time_str to (current_hour as string) & ":" & (minutes of (current date) as string) & (am_str as string)
-	end if
-	time_str
-end defaultTimeStr
+	end repeat
+	
+	repeat with i from 1 to count (shortDays)
+		set shortDay to item i of shortDays
+		set longDay to item i of longDays
+		set replacedQ to findAndReplaceShortDay(shortDay, longDay, q)
+		if replacedQ = -1 then
+			log "no match"
+		else
+			set expandedQ to replacedQ
+			exit repeat
+		end if
+	end repeat
+	
+	return expandedQ
+	
+end expandDay
 
-on findTime(str, params_count, ddate)
+on findAndReplaceShortDay(dayShortStr, dayStr, q)
 	
-	if params_count > 2 then
-		set time_str to trimBoth(text item 3 of lowerString(str))
-	else if params_count > 1 then
-		set time_str to trimBoth(text item 3 of lowerString(str))
-	else if params_count > 0 then
-		set time_str to trimBoth(text item 2 of lowerString(str))
+	set dayStrExists to count (findAll(q, dayStr))
+	
+	if dayStrExists > 0 then
+		return -1
+	end if
+	
+	set firstPart to leftStringFromRight(q, dayShortStr)
+	
+	if firstPart = q then
+		-1
 	else
-		set time_str to defaultTimeStr(ddate)
+		firstPart & "" & dayStr & rightStringFromRight(q, dayShortStr)
 	end if
 	
-	set am to count (findAll(time_str, "am"))
-	set pm to count (findAll(time_str, "pm"))
-	
-	if am = 0 and pm = 0 then
-		set time_str to defaultTimeStr(ddate)
-		set am to count (findAll(time_str, "am"))
-		set pm to count (findAll(time_str, "pm"))
-	end if
-	
-	log time_str
-	
-	set hours_to_add to 0
-	if am > 0 and pm = 0 then
-		set time_str to leftStringFromRight(time_str, "am")
-	else if am = 0 and pm > 0 then
-		set time_str to leftStringFromRight(time_str, "pm")
-		set hours_to_add to 12
-	end if
-	
-	set time_components to explode(":", time_str)
-	set comp_count to count (time_components)
-	
-	if comp_count > 1 then
-		set hours of ddate to (item 1 of time_components) + hours_to_add
-		set minutes of ddate to (item 2 of time_components)
-	else
-		set hours of ddate to time_str + hours_to_add
-	end if
-	
-	ddate
-	
-end findTime
-
-on findCal(str, params_count)
-	set calendar to default_calendar
-	
-	if params_count > 2 then
-		set calendar to trimBoth(text item 4 of str)
-	end if
-	
-	tell application "iCal"
-		set existing_calendars to title of every calendar
-		log existing_calendars
-	end tell
-	
-	if existing_calendars contains calendar then
-		calendar
-	else
-		default_calendar
-	end if
-	
-end findCal
+end findAndReplaceShortDay
 
 -- *** 3rd party functions from http://applescript.bratis-lover.net/library/string/ ***
+
+-- e.g. leftStringFromRight("ab:ca:bc", ":") --> "ab:ca"
+
+on leftStringFromRight(str, del)
+	-- ljr (http://applescript.bratis-lover.net/library/string/)
+	local str, del, oldTIDs
+	set oldTIDs to AppleScript's text item delimiters
+	try
+		set str to str as string
+		if str does not contain del then return str
+		set AppleScript's text item delimiters to del
+		set str to str's text items 1 thru -2 as string
+		set AppleScript's text item delimiters to oldTIDs
+		return str
+	on error eMsg number eNum
+		set AppleScript's text item delimiters to oldTIDs
+		error "Can't leftStringFromRight: " & eMsg number eNum
+	end try
+end leftStringFromRight
+
+-- e.g. rightStringFromRight("ab:ca:bc", ":") --> "bc"
+
+on rightStringFromRight(str, del)
+	-- ljr (http://applescript.bratis-lover.net/library/string/)
+	local str, del, oldTIDs
+	set oldTIDs to AppleScript's text item delimiters
+	try
+		set str to str as string
+		if str does not contain del then return str
+		set AppleScript's text item delimiters to del
+		set str to str's last text item
+		set AppleScript's text item delimiters to oldTIDs
+		return str
+	on error eMsg number eNum
+		set AppleScript's text item delimiters to oldTIDs
+		error "Can't rightStringFromRight: " & eMsg number eNum
+	end try
+end rightStringFromRight
 
 on findAll(str, findString)
 	-- ljr (http://applescript.bratis-lover.net/library/string/)
@@ -232,121 +152,3 @@ on findAll(str, findString)
 		error "Can't findAll: " & eMsg number eNum
 	end try
 end findAll
-
-on trimEnd(str)
-	-- HAS (http://applemods.sourceforge.net/mods/Data/String.php)
-	local str, whiteSpace
-	try
-		set str to str as string
-		set whiteSpace to {character id 10, return, space, tab}
-		try
-			repeat while str's last character is in whiteSpace
-				set str to str's text 1 thru -2
-			end repeat
-			return str
-		on error number -1728
-			return ""
-		end try
-	on error eMsg number eNum
-		error "Can't trimEnd: " & eMsg number eNum
-	end try
-end trimEnd
-
-on trimStart(str)
-	-- HAS (http://applemods.sourceforge.net/mods/Data/String.php)
-	local str, whiteSpace
-	try
-		set str to str as string
-		set whiteSpace to {character id 10, return, space, tab}
-		try
-			repeat while str's first character is in whiteSpace
-				set str to str's text 2 thru -1
-			end repeat
-			return str
-		on error number -1728
-			return ""
-		end try
-	on error eMsg number eNum
-		error "Can't trimStart: " & eMsg number eNum
-	end try
-end trimStart
-
--- e.g. trimBoth("  \t \n \r  abc  \t \n \r ") --> "abc"
-
-on trimBoth(str)
-	-- HAS (http://applemods.sourceforge.net/mods/Data/String.php)
-	local str
-	try
-		return my trimStart(my trimEnd(str))
-	on error eMsg number eNum
-		error "Can't trimBoth: " & eMsg number eNum
-	end try
-end trimBoth
-
-property _ucChars_ : "AÄÁÀÂÃÅĂĄÆBCÇĆČDĎĐEÉÈÊËĚĘFGHIÍÌÎÏJKLĹĽŁMNÑŃŇ" & ¬
-	"OÖÓÒÔÕŐØPQRŔŘSŞŠŚTŤŢUÜÚÙÛŮŰVWXYÝZŽŹŻÞ"
-
-property _lcChars_ : "aäáàâãåăąæbcçćčdďđeéèêëěęfghiíìîïjklĺľłmnñńň" & ¬
-	"oöóòôõőøpqrŕřsşšśtťţuüúùûůűvwxyýzžźżþ"
-
-on lowerString(theText)
-	-- Aurelio (http://aurelio.net/doc/as4pp.html)
-	local upper, lower, theText
-	try
-		return my translateChars(theText, my _ucChars_, my _lcChars_)
-	on error eMsg number eNum
-		error "Can't lowerString: " & eMsg number eNum
-	end try
-end lowerString
-
-on translateChars(theText, fromChars, toChars)
-	-- Aurelio (http://aurelio.net/doc/as4pp.html)
-	local Newtext, fromChars, toChars, char, newChar, theText
-	try
-		set Newtext to ""
-		if (count fromChars) ≠ (count toChars) then
-			error "translateChars: From/To strings have different lenght"
-		end if
-		repeat with char in theText
-			set newChar to char
-			set x to offset of char in fromChars
-			if x is not 0 then set newChar to character x of toChars
-			set Newtext to Newtext & newChar
-		end repeat
-		return Newtext
-	on error eMsg number eNum
-		error "Can't translateChars: " & eMsg number eNum
-	end try
-end translateChars
-
-on leftStringFromRight(str, del)
-	-- ljr (http://applescript.bratis-lover.net/library/string/)
-	local str, del, oldTIDs
-	set oldTIDs to AppleScript's text item delimiters
-	try
-		set str to str as string
-		if str does not contain del then return str
-		set AppleScript's text item delimiters to del
-		set str to str's text items 1 thru -2 as string
-		set AppleScript's text item delimiters to oldTIDs
-		return str
-	on error eMsg number eNum
-		set AppleScript's text item delimiters to oldTIDs
-		error "Can't leftStringFromRight: " & eMsg number eNum
-	end try
-end leftStringFromRight
-
-on explode(delimiter, input)
-	-- ljr (http://applescript.bratis-lover.net/library/string/),   modified from Applescript.net (http://bbs.applescript.net/viewtopic.php?id=18377)
-	local delimiter, input, ASTID
-	set ASTID to AppleScript's text item delimiters
-	try
-		set AppleScript's text item delimiters to delimiter
-		set input to text items of input
-		set AppleScript's text item delimiters to ASTID
-		return input --> list
-	on error eMsg number eNum
-		set AppleScript's text item delimiters to ASTID
-		error "Can't explode: " & eMsg number eNum
-	end try
-end explode

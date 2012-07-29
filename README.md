@@ -1,7 +1,10 @@
 alfred-reminders
 ================
 
-An extension for [Alfred](http://www.alfredapp.com/) to create iOS Reminders. You'll need Alfred's [Powerpack](http://www.alfredapp.com/powerpack/) to use this.
+An extension for [Alfred](http://www.alfredapp.com/) to create iOS Reminders. You'll need Alfred's 
+[Powerpack](http://www.alfredapp.com/powerpack/) to use this. 
+
+Reminders.app must to be running, since the extension needs to access it.
 
 ![Sample Screen Shot](https://github.com/downloads/dlinsin/alfred-reminders/reminder_screen_shot.png)
 
@@ -9,49 +12,43 @@ An extension for [Alfred](http://www.alfredapp.com/) to create iOS Reminders. Yo
 
 1. download [Reminders.alfredextension](https://github.com/downloads/dlinsin/alfred-reminders/Reminders.alfredextension)
 1. drag it to Alfred
-1. edit the name of your [default Reminders calendar](https://github.com/dlinsin/alfred-reminders#default-reminders-calendar) at the top of the AppleScript
 1. done
 
-### Default Reminders Calendar
+### Default Reminders list
 
-If you don't know the name of your Reminders calendar:
+The extension adds the new Reminder to your default list. The list can be changed by dragging it 
+to the top position:
 
-![Default Reminders Calendar in iCal](https://github.com/downloads/dlinsin/alfred-reminders/setup_default_calendar.png)
-
-1. go to iCal
-1. make sure the Reminders panel is visible
-1. click on Reminders to reveal your iCould calendars, which are also used for Remindes
-1. edit the name of your default Reminders calendar in Alfred
+![Default Reminders List](https://github.com/downloads/dlinsin/alfred-reminders/setup_default_list.png)
 
 ## Usage
 
-Assume today is _May, 17th 5pm_ and the default calendar is called _Private_
+The extension expands abbreviations of days like _tom_ or _tue_ so you could write:
 
-* rem get milk -Mon -3am -work
+__rem get milk tom at 3pm__
+
+Here are a couple of examples assuming it's _Sunday - July, 29th 9:30am_
+
+* rem get milk tom at 3pm
   * titel: get milk
-  * due date: May, 21st 3am
-  * calendar: Work
-* rem get milk -Wednesday -4am
+  * remind me: Monday - July, 30th 3pm
+* rem get milk monday at 3pm
   * titel: get milk
-  * due date: May, 23rd 4am
-  * calendar: Private
-* rem get milk -tom -8:15am
+  * remind me: Monday - July, 30th 3pm
+* rem get milk tomorrow at 3pm
   * titel: get milk
-  * due date: May, 18th 8:15am
-  * calendar: Private
-* rem get milk -tom -3:15pm
+  * remind me: Monday - July, 30th 3pm
+* rem get milk sunday at 3pm
   * titel: get milk
-  * due date: May, 18th 3:15pm
-  * calendar: Private
-* rem get milk -6pm
+  * remind me: Sunday - July, 29th 3pm
+* rem get milk today at 3pm
   * titel: get milk
-  * due date: May, 17th 6pm
-  * calendar: Private
-* rem get milk 
+  * remind me: Sunday - July, 29th 3pm
+* rem get milk sunday at 7am
   * titel: get milk
-  * due date: May, 17th 6pm
-  * calendar: Private
-  
+  * remind me: Sunday - July, 29th 7am
+  * already due
+
 ## TODOs
 
 Report through [issues](https://github.com/dlinsin/alfred-reminders/issues)
