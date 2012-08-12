@@ -6,7 +6,7 @@ An extension for [Alfred](http://www.alfredapp.com/) to create iOS Reminders. Yo
 
 Reminders.app must to be running, since the extension needs to access it.
 
-![Sample Screen Shot](https://github.com/downloads/dlinsin/alfred-reminders/reminder_screen_shot.png)
+![Sample Screen Shot](https://github.com/downloads/dlinsin/alfred-reminders/ml_reminder_screen_shot.png)
 
 ## Setup:
 
