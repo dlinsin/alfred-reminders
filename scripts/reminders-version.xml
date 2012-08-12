@@ -1,6 +1,6 @@
-<?xml version=”1.0” encoding=”ISO-8859-1”?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <update>
-<version>1.0</version>
-<url>https://github.com/downloads/dlinsin/alfred-reminders/Reminders.alfredextension</url>
-<comments>First version!</comments>
+<version>2.0beta2</version>
+<url>http://cloud.github.com/downloads/dlinsin/alfred-reminders/Reminders-2.0-beta2.alfredextension</url>
+<comments>2.0 Beta2</comments>
 </update>
