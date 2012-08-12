@@ -1,7 +1,8 @@
 on alfred_script(q)
 	
 	set qt to q as text
-	set expandedQT to expandDay(qt)
+	set itemList to extractList(qt)
+	set expandedQT to expandDay(removeList(qt))
 	
 	tell application "Reminders"
 		activate
@@ -11,11 +12,27 @@ on alfred_script(q)
 			keystroke expandedQT & return
 			key code 53
 		end tell
+		
+		if itemList is not equal to qt then
+			set defaultList to name of default list
+			set listOfItems to reminders in list defaultList whose completed is false
+			set createdItem to last item of listOfItems
+		
+			tell list itemList
+				make new reminder with properties {name:(name of createdItem) as string, remind me date:(remind me date of createdItem) as date}
+			end tell
+			delete createdItem
+		end if
+		
 		tell application "System Events"
 			set isRunning to (count of (every process whose bundle identifier is "com.Growl.GrowlHelperApp")) > 0
 		end tell
 		
 		if isRunning then
+			set titleList to name of default list
+			if itemList is not equal to qt then
+				set titleList to itemList
+			end if
 			tell application id "com.Growl.GrowlHelperApp"
 				set the allNotificationsList to {"New Reminders Task"}
 				set the enabledNotificationsList to {"New Reminders Task"}
@@ -25,7 +42,7 @@ on alfred_script(q)
 					icon of application "Reminders"
 				notify with name ¬
 					"New Reminders Task" title ¬
-					"New Reminder Created" description ¬
+					titleList & ": New Reminder Created" description ¬
 					expandedQT ¬
 						application name "New Reminders Task"
 			end tell
@@ -33,6 +50,17 @@ on alfred_script(q)
 	end tell
 	
 end alfred_script
+
+on extractList(q)
+	return rightStringFromRight(q, "#")
+end extractList
+
+on removeList(q)
+	if (rightStringFromRight(q, "#")) is not equal to q then
+		return leftStringFromRight(q, "#")
+	end if
+	return q
+end removeList
 
 on expandDay(q)
 	set shortDays to {"tom", "mon", "tue", "wed", "thu", "fri", "sat", "sun"}
