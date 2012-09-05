@@ -1,3 +1,5 @@
+property myDefaultList : ""
+
 on alfred_script(q)
 	
 	set qt to q as text
@@ -51,9 +53,7 @@ on alfred_script(q)
 	
 end alfred_script
 
-on extractList(q)
-	return rightStringFromRight(q, "#")
-end extractList
+on extractList(q)	if (rightStringFromRight(q, "#")) is q and length of myDefaultList is not 0 then		return myDefaultList	end if	return rightStringFromRight(q, "#")end extractList
 
 on removeList(q)
 	if (rightStringFromRight(q, "#")) is not equal to q then
