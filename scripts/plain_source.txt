@@ -4,7 +4,7 @@ on alfred_script(q)
 	
 	set qt to q as text
 	set itemList to extractList(qt)
-	set expandedQT to expandDay(removeList(qt))
+	set expandedQT to expandDelay(expandDay(removeList(qt)))
 	
 	tell application "Reminders"
 		activate
@@ -19,7 +19,7 @@ on alfred_script(q)
 			set defaultList to name of default list
 			set listOfItems to reminders in list defaultList whose completed is false
 			set createdItem to last item of listOfItems
-		
+			
 			tell list itemList
 				make new reminder with properties {name:(name of createdItem) as string, remind me date:(remind me date of createdItem) as date}
 			end tell
@@ -53,7 +53,12 @@ on alfred_script(q)
 	
 end alfred_script
 
-on extractList(q)	if (rightStringFromRight(q, "#")) is q and length of myDefaultList is not 0 then		return myDefaultList	end if	return rightStringFromRight(q, "#")end extractList
+on extractList(q)
+	if (rightStringFromRight(q, "#")) is q and length of myDefaultList is not 0 then
+		return myDefaultList
+	end if
+	return rightStringFromRight(q, "#")
+end extractList
 
 on removeList(q)
 	if (rightStringFromRight(q, "#")) is not equal to q then
@@ -110,6 +115,27 @@ on findAndReplaceShortDay(dayShortStr, dayStr, q)
 	end if
 	
 end findAndReplaceShortDay
+
+on expandDelay(q)
+	
+	if (rightStringFromRight(q, "+")) is not equal to q then
+		
+		set delayInMins to rightStringFromRight(q, "+")
+		set firstPart to leftStringFromRight(q, "+")
+		
+		set targetDate to current date
+		set targetDate's minutes to (targetDate's minutes) + (delayInMins)
+		
+		return firstPart & (time string of targetDate)
+		
+	else
+		
+		return q
+		
+	end if
+	
+end expandDelay
+
 
 -- *** 3rd party functions from http://applescript.bratis-lover.net/library/string/ ***
 

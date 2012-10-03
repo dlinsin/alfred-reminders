@@ -10,7 +10,7 @@ Reminders.app must to be running, since the extension needs to access it.
 
 ## Setup:
 
-1. download [Reminders.alfredextension](https://github.com/downloads/dlinsin/alfred-reminders/Reminders-2.0-beta2.alfredextension)
+1. download [Reminders.alfredextension](https://github.com/downloads/dlinsin/alfred-reminders/Reminders-2.1.alfredextension)
 1. drag it to Alfred
 1. done
 
@@ -29,6 +29,10 @@ __rem get milk tom at 3pm #private__
 
 You can specify a list the reminder is adde to, by adding a pound/number sign followed by 
 the list name at the end of the input. _Note: list names are case sensitive._
+
+You can also specify a number of minutes in which the reminder is due. The minutes will be 
+added to the current time. You can specify them using a plus sign followed by the number of 
+minutes.
 
 Here are a couple of examples assuming it's _Sunday - July, 29th 9:30am and your default list is called "private"_
 
@@ -56,7 +60,15 @@ Here are a couple of examples assuming it's _Sunday - July, 29th 9:30am and your
   * title: get milk
   * remind me: Sunday - July, 29th 7am
   * already due
-
+* rem get milk +20
+  * title: get milk
+  * remind me: Sunday - July, 29th 9:50am
+  * list: private
+* rem get milk +20 #work
+  * title: get milk
+  * remind me: Sunday - July, 29th 9:50am
+  * list: work  
+  
 ## TODOs
 
 Report through [issues](https://github.com/dlinsin/alfred-reminders/issues)
